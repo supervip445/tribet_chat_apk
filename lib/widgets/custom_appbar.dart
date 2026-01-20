@@ -97,6 +97,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
     final isLoggedIn = _publicUser != null;
     final authProvider = Provider.of<AuthProvider>(context);
+    debugPrint('AuthProvider isAuthenticated: ${authProvider.user}');
 
     return Padding(
       padding: const EdgeInsets.only(right: 4),
@@ -120,7 +121,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 ],
               ),
             ),
-          if (!authProvider.isAuthenticated)
+          // if (!authProvider.isAuthenticated)
+          if(isLoggedIn)
             PopupMenuButton<_AuthMenuAction>(
               color: Colors.white,
               offset: Offset(-20, 40),

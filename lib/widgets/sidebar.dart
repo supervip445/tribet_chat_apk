@@ -1,7 +1,8 @@
 import 'package:dhamma_apk/services/public_auth_service.dart';
+import 'package:dhamma_apk/widgets/chat/chat_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 import '../providers/auth_provider.dart';
 
 class Sidebar extends StatelessWidget {
@@ -49,21 +50,24 @@ class Sidebar extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Image.asset(
-                  'assets/logo/logo.jpg',
-                  height: 60,
-                  width: 60,
-                  errorBuilder: (_, __, ___) => Container(
+                ClipOval(
+                  child: Image.asset(
+                    'assets/logo.jpg',
                     height: 60,
                     width: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.amber[800],
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: const Icon(
-                      Icons.temple_buddhist,
-                      color: Colors.white,
-                      size: 30,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      height: 60,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.amber[800],
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.business_outlined,
+                        color: Colors.white,
+                        size: 30,
+                      ),
                     ),
                   ),
                 ),
@@ -76,10 +80,12 @@ class Sidebar extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Text(
-                  'Tri Chat',
-                  style: TextStyle(color: Colors.white, fontSize: 14),
-                ),
+                const SizedBox(height: 12),
+
+                // const Text(
+                //   'Tri Chat',
+                //   style: TextStyle(color: Colors.white, fontSize: 14),
+                // ),
               ],
             ),
           ),
@@ -159,7 +165,7 @@ class Sidebar extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.all(16.0),
             child: Text(
-              'Support Team',
+              'Admin service',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
@@ -167,31 +173,32 @@ class Sidebar extends StatelessWidget {
               ),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.person, color: Colors.amber),
-            title: const Text('Mandalay IT Hub'),
-            subtitle: Row(
-              children: const [
-                Icon(Icons.send, size: 14, color: Colors.grey),
-                SizedBox(width: 4),
-                Text('@mandalayithub', style: TextStyle(fontSize: 12)),
-              ],
-            ),
-            onTap: () async {
-              final scatffoldMes = ScaffoldMessenger.of(context);
-              final Uri telegramUrl = Uri.parse('https://t.me/mandalayithub');
-              if (await canLaunchUrl(telegramUrl)) {
-                await launchUrl(
-                  telegramUrl,
-                  mode: LaunchMode.externalApplication,
-                );
-              } else {
-                scatffoldMes.showSnackBar(
-                  const SnackBar(content: Text('Could not open Telegram link')),
-                );
-              }
-            },
-          ),
+          // ListTile(
+          //   leading: const Icon(Icons.person, color: Colors.amber),
+          //   title: const Text('Mandalay IT Hub'),
+          //   subtitle: Row(
+          //     children: const [
+          //       Icon(Icons.send, size: 14, color: Colors.grey),
+          //       SizedBox(width: 4),
+          //       Text('@mandalayithub', style: TextStyle(fontSize: 12)),
+          //     ],
+          //   ),
+          //   onTap: () async {
+          //     final scatffoldMes = ScaffoldMessenger.of(context);
+          //     final Uri telegramUrl = Uri.parse('https://t.me/mandalayithub');
+          //     if (await canLaunchUrl(telegramUrl)) {
+          //       await launchUrl(
+          //         telegramUrl,
+          //         mode: LaunchMode.externalApplication,
+          //       );
+          //     } else {
+          //       scatffoldMes.showSnackBar(
+          //         const SnackBar(content: Text('Could not open Telegram link')),
+          //       );
+          //     }
+          //   },
+          // ),
+          ChatIcon(mode: ChatIconMode.listTile, title: "Chat"),
         ],
       ),
     );

@@ -26,10 +26,10 @@ class _BiographiesAdminScreenState extends State<BiographiesAdminScreen> {
   Map<String, dynamic>? _selectedBiographyForViews;
 
   final _nameController = TextEditingController();
-  final _birthYearController = TextEditingController();
-  final _sanghaEntryYearController = TextEditingController();
-  final _disciplesController = TextEditingController();
-  final _teachingMonasteryController = TextEditingController();
+  // final _birthYearController = TextEditingController();
+  // final _sanghaEntryYearController = TextEditingController();
+  // final _disciplesController = TextEditingController();
+  // final _teachingMonasteryController = TextEditingController();
   final _sanghaDhammaController = TextEditingController();
   File? _imageFile;
 
@@ -42,10 +42,10 @@ class _BiographiesAdminScreenState extends State<BiographiesAdminScreen> {
   @override
   void dispose() {
     _nameController.dispose();
-    _birthYearController.dispose();
-    _sanghaEntryYearController.dispose();
-    _disciplesController.dispose();
-    _teachingMonasteryController.dispose();
+    // _birthYearController.dispose();
+    // _sanghaEntryYearController.dispose();
+    // _disciplesController.dispose();
+    // _teachingMonasteryController.dispose();
     _sanghaDhammaController.dispose();
     super.dispose();
   }
@@ -79,10 +79,10 @@ class _BiographiesAdminScreenState extends State<BiographiesAdminScreen> {
     try {
       final formData = FormData();
       formData.append('name', _nameController.text);
-      formData.append('birth_year', _birthYearController.text);
-      formData.append('sangha_entry_year', _sanghaEntryYearController.text);
-      formData.append('disciples', _disciplesController.text);
-      formData.append('teaching_monastery', _teachingMonasteryController.text);
+      // formData.append('birth_year', _birthYearController.text);
+      // formData.append('sangha_entry_year', _sanghaEntryYearController.text);
+      // formData.append('disciples', _disciplesController.text);
+      // formData.append('teaching_monastery', _teachingMonasteryController.text);
       formData.append('sangha_dhamma', _sanghaDhammaController.text);
 
       if (_imageFile != null) {
@@ -91,16 +91,16 @@ class _BiographiesAdminScreenState extends State<BiographiesAdminScreen> {
 
       if (_editingBiography != null) {
         await _biographyService.update(_editingBiography!['id'], formData);
-        _showSuccess('Biography updated successfully');
+        _showSuccess('Promotion updated successfully');
       } else {
         await _biographyService.create(formData);
-        _showSuccess('Biography created successfully');
+        _showSuccess('Promotion created successfully');
       }
 
       _resetForm();
       _fetchBiographies();
     } catch (e) {
-      _showError('Error saving biography: $e');
+      _showError('Error saving promotion: $e');
     }
   }
 
@@ -108,10 +108,10 @@ class _BiographiesAdminScreenState extends State<BiographiesAdminScreen> {
     setState(() {
       _editingBiography = biography;
       _nameController.text = biography['name'] ?? '';
-      _birthYearController.text = biography['birth_year'] ?? '';
-      _sanghaEntryYearController.text = biography['sangha_entry_year'] ?? '';
-      _disciplesController.text = biography['disciples'] ?? '';
-      _teachingMonasteryController.text = biography['teaching_monastery'] ?? '';
+      // _birthYearController.text = biography['birth_year'] ?? '';
+      // _sanghaEntryYearController.text = biography['sangha_entry_year'] ?? '';
+      // _disciplesController.text = biography['disciples'] ?? '';
+      // _teachingMonasteryController.text = biography['teaching_monastery'] ?? '';
       _sanghaDhammaController.text = biography['sangha_dhamma'] ?? '';
       _imageFile = null;
       _showModal = true;
@@ -122,8 +122,8 @@ class _BiographiesAdminScreenState extends State<BiographiesAdminScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Biography'),
-        content: const Text('Are you sure you want to delete this biography?'),
+        title: const Text('Delete Promotion'),
+        content: const Text('Are you sure you want to delete this promotion?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -141,20 +141,20 @@ class _BiographiesAdminScreenState extends State<BiographiesAdminScreen> {
     if (confirmed == true) {
       try {
         await _biographyService.delete(id);
-        _showSuccess('Biography deleted successfully');
+        _showSuccess('Promotion deleted successfully');
         _fetchBiographies();
       } catch (e) {
-        _showError('Error deleting biography: $e');
+        _showError('Error deleting promotion: $e');
       }
     }
   }
 
   void _resetForm() {
     _nameController.clear();
-    _birthYearController.clear();
-    _sanghaEntryYearController.clear();
-    _disciplesController.clear();
-    _teachingMonasteryController.clear();
+    // _birthYearController.clear();
+    // _sanghaEntryYearController.clear();
+    // _disciplesController.clear();
+    // _teachingMonasteryController.clear();
     _sanghaDhammaController.clear();
     _imageFile = null;
     _editingBiography = null;
@@ -183,7 +183,7 @@ class _BiographiesAdminScreenState extends State<BiographiesAdminScreen> {
   @override
   Widget build(BuildContext context) {
     return AdminLayout(
-      title: 'Biographies',
+      title: 'Promotions',
       child: Stack(
         children: [
           Padding(
@@ -200,7 +200,7 @@ class _BiographiesAdminScreenState extends State<BiographiesAdminScreen> {
                         setState(() => _showModal = true);
                       },
                       icon: const Icon(Icons.add),
-                      label: const Text('Add New Biography'),
+                      label: const Text('Add New Promotion'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.amber[600],
                         foregroundColor: Colors.white,
@@ -214,7 +214,7 @@ class _BiographiesAdminScreenState extends State<BiographiesAdminScreen> {
                 else
                   Expanded(
                     child: _biographies.isEmpty
-                        ? const Center(child: Text('No biographies found'))
+                        ? const Center(child: Text('No promotions found'))
                         : Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -236,9 +236,9 @@ class _BiographiesAdminScreenState extends State<BiographiesAdminScreen> {
                                   child: DataTable(
                                     columns: const [
                                       DataColumn(label: Text('Name')),
-                                      DataColumn(label: Text('Birth Year')),
-                                      DataColumn(label: Text('Sangha Entry')),
-                                      DataColumn(label: Text('Disciples')),
+                                      // DataColumn(label: Text('Birth Year')),
+                                      // DataColumn(label: Text('Sangha Entry')),
+                                      // DataColumn(label: Text('Disciples')),
                                       DataColumn(label: Text('Views')),
                                       DataColumn(label: Text('Actions')),
                                     ],
@@ -246,18 +246,18 @@ class _BiographiesAdminScreenState extends State<BiographiesAdminScreen> {
                                       return DataRow(
                                         cells: [
                                           DataCell(Text(biography['name'] ?? '')),
-                                          DataCell(
-                                            Text(biography['birth_year'] ?? ''),
-                                          ),
-                                          DataCell(
-                                            Text(
-                                              biography['sangha_entry_year'] ??
-                                                  '',
-                                            ),
-                                          ),
-                                          DataCell(
-                                            Text(biography['disciples'] ?? ''),
-                                          ),
+                                          // DataCell(
+                                          //   Text(biography['birth_year'] ?? ''),
+                                          // ),
+                                          // DataCell(
+                                          //   Text(
+                                          //     biography['sangha_entry_year'] ??
+                                          //         '',
+                                          //   ),
+                                          // ),
+                                          // DataCell(
+                                          //   Text(biography['disciples'] ?? ''),
+                                          // ),
                                           DataCell(
                                             InkWell(
                                               onTap: () => _handleViewCountClick(
@@ -343,8 +343,8 @@ class _BiographiesAdminScreenState extends State<BiographiesAdminScreen> {
                             children: [
                               Text(
                                 _editingBiography != null
-                                    ? 'Edit Biography'
-                                    : 'Create New Biography',
+                                    ? 'Edit Promotion'
+                                    : 'Create New Promotion',
                                 style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -379,46 +379,46 @@ class _BiographiesAdminScreenState extends State<BiographiesAdminScreen> {
                                   },
                                 ),
                                 const SizedBox(height: 16),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: TextFormField(
-                                        controller: _birthYearController,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Birth Year',
-                                          border: OutlineInputBorder(),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: TextFormField(
-                                        controller: _sanghaEntryYearController,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Sangha Entry Year',
-                                          border: OutlineInputBorder(),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 16),
-                                TextFormField(
-                                  controller: _disciplesController,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Disciples',
-                                    border: OutlineInputBorder(),
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                TextFormField(
-                                  controller: _teachingMonasteryController,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Teaching Monastery',
-                                    border: OutlineInputBorder(),
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
+                                // Row(
+                                //   children: [
+                                //     Expanded(
+                                //       child: TextFormField(
+                                //         controller: _birthYearController,
+                                //         decoration: const InputDecoration(
+                                //           labelText: 'Birth Year',
+                                //           border: OutlineInputBorder(),
+                                //         ),
+                                //       ),
+                                //     ),
+                                //     const SizedBox(width: 16),
+                                //     Expanded(
+                                //       child: TextFormField(
+                                //         controller: _sanghaEntryYearController,
+                                //         decoration: const InputDecoration(
+                                //           labelText: 'Sangha Entry Year',
+                                //           border: OutlineInputBorder(),
+                                //         ),
+                                //       ),
+                                //     ),
+                                //   ],
+                                // ),
+                                // const SizedBox(height: 16),
+                                // TextFormField(
+                                //   controller: _disciplesController,
+                                //   decoration: const InputDecoration(
+                                //     labelText: 'Disciples',
+                                //     border: OutlineInputBorder(),
+                                //   ),
+                                // ),
+                                // const SizedBox(height: 16),
+                                // TextFormField(
+                                //   controller: _teachingMonasteryController,
+                                //   decoration: const InputDecoration(
+                                //     labelText: 'Teaching Monastery',
+                                //     border: OutlineInputBorder(),
+                                //   ),
+                                // ),
+                                // const SizedBox(height: 16),
                                 TextFormField(
                                   controller: _sanghaDhammaController,
                                   maxLines: 4,

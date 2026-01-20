@@ -77,22 +77,23 @@ class _MonasteriesScreenState extends State<MonasteriesScreen> {
                           child: Column(
                             children: [
                               Text(
-                                _data!.title,
+                                // _data!.title,
+                                "Tri Chat\n ရောင်းအားအကောင်းဆုံး",
                                 style: TextStyle(
                                   fontSize: isSmallScreen ? 24 : 32,
                                   fontWeight: FontWeight.bold,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                _data!.subtitle,
-                                style: TextStyle(
-                                  fontSize: isSmallScreen ? 14 : 18,
-                                  color: Colors.grey[600],
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
+                              // const SizedBox(height: 8),
+                              // Text(
+                              //   _data!.subtitle,
+                              //   style: TextStyle(
+                              //     fontSize: isSmallScreen ? 14 : 18,
+                              //     color: Colors.grey[600],
+                              //   ),
+                              //   textAlign: TextAlign.center,
+                              // ),
                             ],
                           ),
                         ),
@@ -116,8 +117,8 @@ class _MonasteriesScreenState extends State<MonasteriesScreen> {
                               columns: const [
                                 DataColumn(label: Text('No.')),
                                 DataColumn(label: Text('Name')),
-                                DataColumn(label: Text('Price')),
-                                DataColumn(label: Text('Qty')),
+                                // DataColumn(label: Text('Price')),
+                                // DataColumn(label: Text('Qty')),
                                 DataColumn(label: Text('Total')),
                               ],
                               rows: _data!.monasteries.isNotEmpty
@@ -130,10 +131,10 @@ class _MonasteriesScreenState extends State<MonasteriesScreen> {
                                         cells: [
                                           DataCell(Text('${index + 1}')),
                                           DataCell(Text(monastery.name)),
-                                          DataCell(Text('${monastery.monks}')),
-                                          DataCell(
-                                            Text('${monastery.novices}'),
-                                          ),
+                                          // DataCell(Text('${monastery.monks}')),
+                                          // DataCell(
+                                          //   Text('${monastery.novices}'),
+                                          // ),
                                           DataCell(
                                             Text(
                                               '${monastery.total}',
@@ -151,8 +152,8 @@ class _MonasteriesScreenState extends State<MonasteriesScreen> {
                                         cells: [
                                           DataCell(Text('-')),
                                           DataCell(Text('No data available')),
-                                          DataCell(Text('-')),
-                                          DataCell(Text('-')),
+                                          // DataCell(Text('-')),
+                                          // DataCell(Text('-')),
                                           DataCell(Text('-')),
                                         ],
                                       ),
@@ -182,7 +183,7 @@ class _MonasteriesScreenState extends State<MonasteriesScreen> {
                               child: DataTable(
                                 columns: const [
                                   DataColumn(label: Text('No.')),
-                                  DataColumn(label: Text('Name')),
+                                  // DataColumn(label: Text('Name')),
                                   DataColumn(label: Text('Price')),
                                   DataColumn(label: Text('Customers')),
                                   DataColumn(label: Text('Qty')),
@@ -197,7 +198,7 @@ class _MonasteriesScreenState extends State<MonasteriesScreen> {
                                         return DataRow(
                                           cells: [
                                             DataCell(Text('${index + 1}')),
-                                            DataCell(Text(building.name)),
+                                            // DataCell(Text(building.name)),
                                             DataCell(
                                               Text(
                                                 building.monasteryName ?? 'N/A',
@@ -223,7 +224,7 @@ class _MonasteriesScreenState extends State<MonasteriesScreen> {
                                         const DataRow(
                                           cells: [
                                             DataCell(Text('-')),
-                                            DataCell(Text('No data available')),
+                                            // DataCell(Text('No data available')),
                                             DataCell(Text('-')),
                                             DataCell(Text('-')),
                                             DataCell(Text('-')),

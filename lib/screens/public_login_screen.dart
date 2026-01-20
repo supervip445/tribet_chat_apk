@@ -81,15 +81,24 @@ class _PublicLoginScreenState extends State<PublicLoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const Text(
-                      'Login',
+                      'Tri Chat',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 32,
+                        fontSize: 28,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFFD97706),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const Text(
+                      'မှကြိုဆိုပါတယ်',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFD97706),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     const Text(
                       'Sign in to your account',
                       textAlign: TextAlign.center,
@@ -184,14 +193,14 @@ class _PublicLoginScreenState extends State<PublicLoginScreen> {
                             ),
                     ),
                     const SizedBox(height: 16),
-                    TextButton(
-                      onPressed: () =>
-                          Navigator.pushNamed(context, '/register'),
-                      child: const Text(
-                        "Don't have an account? Register",
-                        style: TextStyle(color: Colors.amber),
-                      ),
-                    ),
+                    // TextButton(
+                    //   onPressed: () =>
+                    //       Navigator.pushNamed(context, '/register'),
+                    //   child: const Text(
+                    //     "Don't have an account? Register",
+                    //     style: TextStyle(color: Colors.amber),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

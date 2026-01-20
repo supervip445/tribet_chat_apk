@@ -86,30 +86,36 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       // Logo
-                      Image.asset(
-                        'assets/logo/logo.jpg',
-                        height: 80,
-                        width: 80,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            height: 80,
-                            width: 80,
-                            decoration: BoxDecoration(
-                              color: Colors.amber[700],
-                              borderRadius: BorderRadius.circular(40),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ClipOval(
+                            child: Image.asset(
+                              'assets/logo.jpg',
+                              height: 80,
+                              width: 80,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => Container(
+                                height: 60,
+                                width: 60,
+                                decoration: BoxDecoration(
+                                  color: Colors.amber[800],
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.business_outlined,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
+                              ),
                             ),
-                            child: const Icon(
-                              Icons.temple_buddhist,
-                              color: Colors.white,
-                              size: 40,
-                            ),
-                          );
-                        },
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 24),
                       // Title
                       const Text(
-                        'Tri chat Admin Login',
+                        'Tri Chat',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 28,
@@ -119,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 8),
                       const Text(
-                        'Tri chat',
+                        'Admin Login',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 14, color: Colors.grey),
                       ),
