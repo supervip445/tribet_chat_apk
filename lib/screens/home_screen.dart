@@ -47,10 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
               : [];
 
           _dhammas = (dhammasData is List)
-              ? dhammasData
-                    .map((item) => Dhamma.fromJson(item))
-                    .take(6)
-                    .toList()
+              ? dhammasData.map((item) => Dhamma.fromJson(item)).take(6).toList()
               : [];
 
           _loading = false;
@@ -61,41 +58,16 @@ class _HomeScreenState extends State<HomeScreen> {
       debugPrint('Posts response: $postsResponse');
       debugPrint('Dhammas response: $dhammasResponse');
       if (mounted) {
-        setState(() {
-          _loading = false;
-        });
+        setState(() => _loading = false);
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    int crossAxisCount;
-    if (screenWidth >= 1200) {
-      crossAxisCount = 4;
-    } else if (screenWidth >= 900) {
-      crossAxisCount = 3;
-    } else if (screenWidth >= 600) {
-      crossAxisCount = 2;
-    } else {
-      crossAxisCount = 1;
-    }
-
-    final double cardWidth = (screenWidth - 16 * (crossAxisCount + 1)) / crossAxisCount;
-    final double postCardHeight = 370;
-    final double dhammaCardHeight = 270;
-    final double aspectRatio = cardWidth / postCardHeight;
-    final double dhammaAspectRatio = cardWidth / dhammaCardHeight;
-
     return Scaffold(
       appBar: CustomAppBar(),
-      drawer: Builder(
-        builder: (context) {
-          return const Sidebar();
-        },
-      ),
+      drawer: const Sidebar(),
       backgroundColor: const Color(0xFFFFF8E1),
       body: Stack(
         children: [
@@ -107,115 +79,142 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     children: [
                       const BannerSlider(),
-                  if (_loading)
-                    const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(32.0),
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Color(0xFFFFB300),
+                      if (_loading)
+                        const Padding(
+                          padding: EdgeInsets.all(32.0),
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Color(0xFFFFB300),
+                              ),
+                            ),
+                          ),
+                        )
+                      else
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 32.0,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Recent Posts
+                              const Padding(
+                                padding: EdgeInsets.only(bottom: 24.0),
+                                child: Text(
+                                  'Recent Posts',
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF424242),
+                                  ),
+                                ),
+                              ),
+                              if (_posts.isEmpty)
+                                const Padding(
+                                  padding: EdgeInsets.all(32.0),
+                                  child: Center(
+                                    child: Text(
+                                      'No posts available',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              else
+                                LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    int crossAxisCount;
+                                    if (constraints.maxWidth >= 1200) {
+                                      crossAxisCount = 4;
+                                    } else if (constraints.maxWidth >= 900) {
+                                      crossAxisCount = 3;
+                                    } else if (constraints.maxWidth >= 600) {
+                                      crossAxisCount = 2;
+                                    } else {
+                                      crossAxisCount = 1;
+                                    }
+
+                                    const double spacing = 24;
+                                    final double itemWidth = (constraints.maxWidth -
+                                            spacing * (crossAxisCount - 1)) /
+                                        crossAxisCount;
+
+                                    return Wrap(
+                                      spacing: spacing,
+                                      runSpacing: spacing,
+                                      children: _posts.map((post) {
+                                        return SizedBox(
+                                          width: itemWidth,
+                                          child: PostCard(post: post),
+                                        );
+                                      }).toList(),
+                                    );
+                                  },
+                                ),
+                              const SizedBox(height: 48),
+                              // Recent Dhamma Talks
+                              const Padding(
+                                padding: EdgeInsets.only(bottom: 24.0),
+                                child: Text(
+                                  'Recent Dhamma Talks',
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF424242),
+                                  ),
+                                ),
+                              ),
+                              if (_dhammas.isEmpty)
+                                const Padding(
+                                  padding: EdgeInsets.all(32.0),
+                                  child: Center(
+                                    child: Text(
+                                      'No dhamma talks available',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              else
+                                LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    int crossAxisCount;
+                                    if (constraints.maxWidth >= 1200) {
+                                      crossAxisCount = 4;
+                                    } else if (constraints.maxWidth >= 900) {
+                                      crossAxisCount = 3;
+                                    } else if (constraints.maxWidth >= 600) {
+                                      crossAxisCount = 2;
+                                    } else {
+                                      crossAxisCount = 1;
+                                    }
+
+                                    const double spacing = 24;
+                                    final double itemWidth = (constraints.maxWidth -
+                                            spacing * (crossAxisCount - 1)) /
+                                        crossAxisCount;
+
+                                    return Wrap(
+                                      spacing: spacing,
+                                      runSpacing: spacing,
+                                      children: _dhammas.map((dhamma) {
+                                        return SizedBox(
+                                          width: itemWidth,
+                                          child: DhammaCard(dhamma: dhamma),
+                                        );
+                                      }).toList(),
+                                    );
+                                  },
+                                ),
+                            ],
                           ),
                         ),
-                      ),
-                    )
-                  else
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 32.0,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Recent Posts
-                          const Padding(
-                            padding: EdgeInsets.only(bottom: 24.0),
-                            child: Text(
-                              'Recent Posts',
-                              style: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF424242),
-                              ),
-                            ),
-                          ),
-                          if (_posts.isEmpty)
-                            const Padding(
-                              padding: EdgeInsets.all(32.0),
-                              child: Center(
-                                child: Text(
-                                  'No posts available',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ),
-                            )
-                          else
-                            GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: crossAxisCount,
-                                    crossAxisSpacing: 24,
-                                    mainAxisSpacing: 24,
-                                    childAspectRatio: aspectRatio,
-                                  ),
-                              itemCount: _posts.length,
-                              itemBuilder: (context, index) {
-                                final post = _posts[index];
-                                return PostCard(post: post);
-                              },
-                            ),
-                          const SizedBox(height: 48),
-                          // Recent Dhamma Talks
-                          const Padding(
-                            padding: EdgeInsets.only(bottom: 24.0),
-                            child: Text(
-                              'Recent Dhamma Talks',
-                              style: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF424242),
-                              ),
-                            ),
-                          ),
-                          if (_dhammas.isEmpty)
-                            const Padding(
-                              padding: EdgeInsets.all(32.0),
-                              child: Center(
-                                child: Text(
-                                  'No dhamma talks available',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ),
-                            )
-                          else
-                            GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: crossAxisCount,
-                                    crossAxisSpacing: 24,
-                                    mainAxisSpacing: 24,
-                                    childAspectRatio: dhammaAspectRatio,
-                                  ),
-                                  itemCount: _dhammas.length,
-                                  itemBuilder: (context, index) {
-                                    final dhamma = _dhammas[index];
-                                    return DhammaCard(dhamma: dhamma);
-                              },
-                            ),
-                        ],
-                      ),
-                    ),
-                  // const Footer(),
                     ],
                   ),
                 ),

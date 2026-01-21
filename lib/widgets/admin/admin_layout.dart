@@ -100,6 +100,7 @@ class AdminLayout extends StatelessWidget {
         onWillPop();
       },
       child: Scaffold(
+        backgroundColor: Colors.grey[100],
         appBar: AppBar(
           backgroundColor: Colors.amber[800],
           iconTheme: const IconThemeData(color: Colors.white),
@@ -194,7 +195,7 @@ class AdminLayout extends StatelessWidget {
           ),
         ),
 
-        body: Container(color: Colors.grey[100], child: child),
+        body: Container(child: child),
       ),
     );
   }

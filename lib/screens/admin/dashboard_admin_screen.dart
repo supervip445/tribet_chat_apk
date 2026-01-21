@@ -17,8 +17,8 @@ class _DashboardAdminScreenState extends State<DashboardAdminScreen> {
   final Map<String, int> _stats = {
     'posts': 0,
     'categories': 0,
-    'donations': 0,
-    'contacts': 0,
+    // 'donations': 0,
+    // 'contacts': 0,
   };
 
   bool _loading = true;
@@ -98,21 +98,21 @@ class _DashboardAdminScreenState extends State<DashboardAdminScreen> {
                           () =>
                               Navigator.pushNamed(context, '/admin/categories'),
                         ),
-                        _buildStatCard(
-                          'Donations',
-                          _stats['donations'].toString(),
-                          Icons.attach_money,
-                          Colors.orange,
-                          () =>
-                              Navigator.pushNamed(context, '/admin/donations'),
-                        ),
-                        _buildStatCard(
-                          'Contacts',
-                          _stats['contacts'].toString(),
-                          Icons.contact_mail,
-                          Colors.purple,
-                          () => Navigator.pushNamed(context, '/admin/contacts'),
-                        ),
+                        // _buildStatCard(
+                        //   'Donations',
+                        //   _stats['donations'].toString(),
+                        //   Icons.attach_money,
+                        //   Colors.orange,
+                        //   () =>
+                        //       Navigator.pushNamed(context, '/admin/donations'),
+                        // ),
+                        // _buildStatCard(
+                        //   'Contacts',
+                        //   _stats['contacts'].toString(),
+                        //   Icons.contact_mail,
+                        //   Colors.purple,
+                        //   () => Navigator.pushNamed(context, '/admin/contacts'),
+                        // ),
                       ],
                     ),
 
@@ -141,21 +141,21 @@ class _DashboardAdminScreenState extends State<DashboardAdminScreen> {
                           Colors.blue,
                           () => Navigator.pushNamed(context, '/admin/posts'),
                         ),
-                        _buildQuickActionCard(
-                          'Manage Donations',
-                          'View and approve donations',
-                          Icons.attach_money,
-                          Colors.green,
-                          () =>
-                              Navigator.pushNamed(context, '/admin/donations'),
-                        ),
-                        _buildQuickActionCard(
-                          'View Contacts',
-                          'Check new messages',
-                          Icons.contact_mail,
-                          Colors.purple,
-                          () => Navigator.pushNamed(context, '/admin/contacts'),
-                        ),
+                        // _buildQuickActionCard(
+                        //   'Manage Donations',
+                        //   'View and approve donations',
+                        //   Icons.attach_money,
+                        //   Colors.green,
+                        //   () =>
+                        //       Navigator.pushNamed(context, '/admin/donations'),
+                        // ),
+                        // _buildQuickActionCard(
+                        //   'View Contacts',
+                        //   'Check new messages',
+                        //   Icons.contact_mail,
+                        //   Colors.purple,
+                        //   () => Navigator.pushNamed(context, '/admin/contacts'),
+                        // ),
                       ],
                     ),
                   ],

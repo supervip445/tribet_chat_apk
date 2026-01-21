@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,8 +14,30 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _userNameController = TextEditingController();
   final _passwordController = TextEditingController();
+
   bool _isLoading = false;
+  bool _obscurePassword = true;
+  bool _rememberPassword = false;
   String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    final remember = prefs.getBool('admin_remember_password') ?? false;
+
+    if (remember) {
+      _userNameController.text = prefs.getString('admin_username') ?? '';
+      _passwordController.text = prefs.getString('admin_password') ?? '';
+      setState(() {
+        _rememberPassword = true;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -24,9 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
     setState(() {
       _isLoading = true;
@@ -39,11 +60,19 @@ class _LoginScreenState extends State<LoginScreen> {
       _passwordController.text,
     );
 
-    setState(() {
-      _isLoading = false;
-    });
+    setState(() => _isLoading = false);
 
     if (success) {
+      final prefs = await SharedPreferences.getInstance();
+
+      if (_rememberPassword) {
+        await prefs.setString('admin_username', _userNameController.text.trim());
+        await prefs.setString('admin_password', _passwordController.text);
+        await prefs.setBool('admin_remember_password', true);
+      } else {
+        await prefs.clear();
+      }
+
       if (mounted) {
         Navigator.pushNamed(context, '/admin/dashboard');
       }
@@ -64,21 +93,20 @@ class _LoginScreenState extends State<LoginScreen> {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
-        if (didPop) return;
-        onWillPop();
+        if (!didPop) onWillPop();
       },
       child: Scaffold(
         backgroundColor: Colors.amber[50],
         body: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(12),
             child: Card(
               elevation: 1,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(32.0),
+                padding: const EdgeInsets.all(32),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -112,8 +140,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ],
                       ),
+
                       const SizedBox(height: 24),
-                      // Title
+
                       const Text(
                         'Tri Chat',
                         textAlign: TextAlign.center,
@@ -123,14 +152,17 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: Colors.amber,
                         ),
                       ),
+
                       const SizedBox(height: 8),
+
                       const Text(
                         'Admin Login',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 14, color: Colors.grey),
                       ),
+
                       const SizedBox(height: 32),
-                      // Error message
+
                       if (_errorMessage != null)
                         Container(
                           padding: const EdgeInsets.all(12),
@@ -145,7 +177,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             style: const TextStyle(color: Colors.red),
                           ),
                         ),
-                      // Username field
+
+                      // Username
                       TextFormField(
                         controller: _userNameController,
                         decoration: const InputDecoration(
@@ -153,32 +186,60 @@ class _LoginScreenState extends State<LoginScreen> {
                           prefixIcon: Icon(Icons.person),
                           border: OutlineInputBorder(),
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your username';
-                          }
-                          return null;
-                        },
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Please enter your username'
+                            : null,
                       ),
+
                       const SizedBox(height: 16),
-                      // Password field
+
+                      // Password
                       TextFormField(
                         controller: _passwordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
+                        obscureText: _obscurePassword,
+                        decoration: InputDecoration(
                           labelText: 'Password',
-                          prefixIcon: Icon(Icons.lock),
-                          border: OutlineInputBorder(),
+                          prefixIcon: const Icon(Icons.lock),
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                          ),
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
-                          }
-                          return null;
-                        },
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Please enter your password'
+                            : null,
                       ),
-                      const SizedBox(height: 24),
-                      // Login button
+
+                      const SizedBox(height: 8),
+
+                      // Remember Password
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: _rememberPassword,
+                            activeColor: Colors.amber[600],
+                            onChanged: (value) {
+                              setState(() {
+                                _rememberPassword = value ?? false;
+                              });
+                            },
+                          ),
+                          const Text('Remember Password'),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Login Button
                       ElevatedButton(
                         onPressed: _isLoading ? null : _handleLogin,
                         style: ElevatedButton.styleFrom(

@@ -342,22 +342,25 @@ class _BannersAdminScreenState extends State<BannersAdminScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  _resetForm();
-                  _showBannerDialog();
-                },
-                icon: const Icon(Icons.add),
-                label: const Text('Add New Banner'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.amber[600],
-                  foregroundColor: Colors.white,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    _resetForm();
+                    _showBannerDialog();
+                  },
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add New Banner'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.amber[600],
+                    foregroundColor: Colors.white,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: 12),
           if (_loading)

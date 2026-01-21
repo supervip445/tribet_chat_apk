@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'api_service.dart';
@@ -54,13 +55,19 @@ class PublicAuthService {
     }
   }
 
-  Future<Map<String, dynamic>> login(String phone, String password) async {
+  Future<Map<String, dynamic>> login(String userName, String password) async {
     try {
+      debugPrint("username: $userName, password: $password");
+
       final response = await _apiService.post(
         '/public/login',
-        data: {'phone': phone, 'password': password},
+        data: {
+          'user_name': userName,
+          'password': password,
+        },
       );
-
+      
+      debugPrint("Login response: $response");
       if (response.statusCode == 200 && response.data['token'] != null) {
         final token = response.data['token'];
         final user = response.data['user'];
@@ -78,6 +85,7 @@ class PublicAuthService {
 
       throw Exception(_extractMessage(response.data) ?? 'Login failed');
     } catch (e) {
+      debugPrint("Login error: $e");
       final message = _extractDioMessage(e) ?? 'Login failed';
       developer.log('Login error: $message');
       throw Exception(message);

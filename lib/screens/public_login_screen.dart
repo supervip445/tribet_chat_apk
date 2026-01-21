@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/public_auth_service.dart';
 import '../widgets/custom_appbar.dart';
 import '../widgets/sidebar.dart';
@@ -12,25 +13,44 @@ class PublicLoginScreen extends StatefulWidget {
 
 class _PublicLoginScreenState extends State<PublicLoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _phoneController = TextEditingController();
+  final _userNameController = TextEditingController();
   final _passwordController = TextEditingController();
+
   bool _isLoading = false;
-  String? _errorMessage;
   bool _obscurePassword = true;
+  bool _rememberPassword = false;
+  String? _errorMessage;
 
   final PublicAuthService _authService = PublicAuthService();
 
   @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    final remember = prefs.getBool('remember_password') ?? false;
+
+    if (remember) {
+      _userNameController.text = prefs.getString('username') ?? '';
+      _passwordController.text = prefs.getString('password') ?? '';
+      setState(() {
+        _rememberPassword = true;
+      });
+    }
+  }
+
+  @override
   void dispose() {
-    _phoneController.dispose();
+    _userNameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
   Future<void> _handleLogin() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
     setState(() {
       _isLoading = true;
@@ -39,9 +59,19 @@ class _PublicLoginScreenState extends State<PublicLoginScreen> {
 
     try {
       await _authService.login(
-        _phoneController.text.trim(),
+        _userNameController.text.trim(),
         _passwordController.text,
       );
+
+      final prefs = await SharedPreferences.getInstance();
+
+      if (_rememberPassword) {
+        await prefs.setString('username', _userNameController.text.trim());
+        await prefs.setString('password', _passwordController.text);
+        await prefs.setBool('remember_password', true);
+      } else {
+        await prefs.clear();
+      }
 
       if (mounted) {
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
@@ -52,9 +82,7 @@ class _PublicLoginScreenState extends State<PublicLoginScreen> {
       });
     } finally {
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+        setState(() => _isLoading = false);
       }
     }
   }
@@ -65,7 +93,7 @@ class _PublicLoginScreenState extends State<PublicLoginScreen> {
       appBar: const CustomAppBar(),
       drawer: const Sidebar(),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(24),
         child: Center(
           child: Card(
             elevation: 6,
@@ -73,7 +101,7 @@ class _PublicLoginScreenState extends State<PublicLoginScreen> {
               borderRadius: BorderRadius.circular(16),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(32.0),
+              padding: const EdgeInsets.all(32),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -105,6 +133,7 @@ class _PublicLoginScreenState extends State<PublicLoginScreen> {
                       style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                     const SizedBox(height: 32),
+
                     if (_errorMessage != null)
                       Container(
                         padding: const EdgeInsets.all(12),
@@ -119,33 +148,38 @@ class _PublicLoginScreenState extends State<PublicLoginScreen> {
                           style: const TextStyle(color: Colors.red),
                         ),
                       ),
+
+                    // Username
                     TextFormField(
-                      controller: _phoneController,
-                      keyboardType: TextInputType.phone,
+                      controller: _userNameController,
                       decoration: const InputDecoration(
-                        labelText: 'Phone Number',
-                        prefixIcon: Icon(Icons.phone),
+                        labelText: 'Username',
+                        prefixIcon: Icon(Icons.person),
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your phone number';
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Please enter your username';
                         }
                         return null;
                       },
                     ),
+
                     const SizedBox(height: 16),
+
+                    // Password
                     TextFormField(
                       controller: _passwordController,
                       obscureText: _obscurePassword,
                       decoration: InputDecoration(
                         labelText: 'Password',
                         prefixIcon: const Icon(Icons.lock),
+                        border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _obscurePassword
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                                ? Icons.visibility_off
+                                : Icons.visibility,
                           ),
                           onPressed: () {
                             setState(() {
@@ -153,16 +187,36 @@ class _PublicLoginScreenState extends State<PublicLoginScreen> {
                             });
                           },
                         ),
-                        border: const OutlineInputBorder(),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (value == null || value.trim().isEmpty) {
                           return 'Please enter your password';
                         }
                         return null;
                       },
                     ),
-                    const SizedBox(height: 24),
+
+                    const SizedBox(height: 8),
+
+                    // Remember Password
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: _rememberPassword,
+                          activeColor: Colors.amber[600],
+                          onChanged: (value) {
+                            setState(() {
+                              _rememberPassword = value ?? false;
+                            });
+                          },
+                        ),
+                        const Text('Remember Password'),
+                      ],
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Login Button
                     ElevatedButton(
                       onPressed: _isLoading ? null : _handleLogin,
                       style: ElevatedButton.styleFrom(
@@ -192,15 +246,6 @@ class _PublicLoginScreenState extends State<PublicLoginScreen> {
                               ),
                             ),
                     ),
-                    const SizedBox(height: 16),
-                    // TextButton(
-                    //   onPressed: () =>
-                    //       Navigator.pushNamed(context, '/register'),
-                    //   child: const Text(
-                    //     "Don't have an account? Register",
-                    //     style: TextStyle(color: Colors.amber),
-                    //   ),
-                    // ),
                   ],
                 ),
               ),

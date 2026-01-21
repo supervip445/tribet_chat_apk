@@ -14,166 +14,131 @@ class PostsScreen extends StatefulWidget {
 
 class _PostsScreenState extends State<PostsScreen> {
   final PublicService _publicService = PublicService();
-  final ScrollController _scrollController = ScrollController();
-
   List<Post> _posts = [];
-
-  bool _isInitialLoading = true;
-  bool _isLoadingMore = false;
-  bool _hasMorePages = true;
-
-  int _currentPage = 1;
+  bool _loading = true;
 
   @override
   void initState() {
     super.initState();
     _fetchPosts();
-    _scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 200 &&
-        !_isLoadingMore &&
-        _hasMorePages) {
-      _fetchMorePosts();
-    }
   }
 
   Future<void> _fetchPosts() async {
     try {
-      final response = await _publicService.getPosts(_currentPage);
-
-      final posts = (response['data'] as List)
-          .map((e) => Post.fromJson(e))
-          .toList();
-
-      final pagination = response['pagination'];
-
+      final response = await _publicService.getPosts(1);
       setState(() {
-        _posts = posts;
-        _hasMorePages = pagination['has_more_pages'];
-        _isInitialLoading = false;
+        _posts = (response['data'] as List)
+            .map((item) => Post.fromJson(item))
+            .toList();
+        _loading = false;
       });
     } catch (e) {
       debugPrint('Error fetching posts: $e');
-      setState(() => _isInitialLoading = false);
+      if (mounted) {
+        setState(() => _loading = false);
+      }
     }
   }
 
-  Future<void> _fetchMorePosts() async {
-    if (!_hasMorePages) return;
-
-    setState(() => _isLoadingMore = true);
-    _currentPage++;
-
-    try {
-      final response = await _publicService.getPosts(_currentPage);
-
-      final posts = (response['data'] as List)
-          .map((e) => Post.fromJson(e))
-          .toList();
-
-      final pagination = response['pagination'];
-
-      setState(() {
-        _posts.addAll(posts);
-        _hasMorePages = pagination['has_more_pages'];
-        _isLoadingMore = false;
-      });
-    } catch (e) {
-      debugPrint('Error loading more posts: $e');
-      setState(() => _isLoadingMore = false);
-    }
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
+  Future<bool> onWillPop() async {
+    Navigator.canPop(context)
+        ? Navigator.pop(context)
+        : Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
+    return false;
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final crossAxisCount = screenWidth > 800 ? 2 : 1;
-    final cardWidth =
-        (screenWidth - 24 * (crossAxisCount + 1)) / crossAxisCount;
-    final cardHeight = screenWidth < 400 ? 350.0 : 450.0;
-    final aspectRatio = cardWidth / cardHeight;
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
-        Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
+        onWillPop();
       },
       child: Scaffold(
         appBar: CustomAppBar(),
         drawer: const Sidebar(),
-        body: _isInitialLoading
+        body: _loading
             ? const Center(child: CircularProgressIndicator())
-            : CustomScrollView(
-                controller: _scrollController,
-                slivers: [
-                  SliverPadding(
-                    padding: const EdgeInsets.all(12),
-                    sliver: SliverToBoxAdapter(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Posts',
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                            ),
+            : _posts.isEmpty
+                ? _buildEmptyState()
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Posts',
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Read our latest posts and articles',
-                            style: TextStyle(color: Colors.grey[600]),
-                          ),
-                          const SizedBox(height: 24),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Read our latest posts and articles',
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                        const SizedBox(height: 24),
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            int crossAxisCount;
+                            if (constraints.maxWidth >= 1200) {
+                              crossAxisCount = 4;
+                            } else if (constraints.maxWidth >= 900) {
+                              crossAxisCount = 3;
+                            } else if (constraints.maxWidth >= 600) {
+                              crossAxisCount = 2;
+                            } else {
+                              crossAxisCount = 1;
+                            }
+
+                            const double spacing = 16;
+                            final double itemWidth =
+                                (constraints.maxWidth -
+                                        spacing * (crossAxisCount - 1)) /
+                                    crossAxisCount;
+
+                            return Wrap(
+                              spacing: spacing,
+                              runSpacing: spacing,
+                              children: _posts.map((post) {
+                                return SizedBox(
+                                  width: itemWidth,
+                                  child: PostCard(post: post),
+                                );
+                              }).toList(),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ),
+      ),
+    );
+  }
 
-                  if (_posts.isEmpty)
-                    const SliverFillRemaining(
-                      child: Center(
-                        child: Text(
-                          'No posts available',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                    )
-                  else
-                    SliverPadding(
-                      padding: const EdgeInsets.only(left: 12, right: 12, bottom: 32),
-                      sliver: SliverGrid(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            if (index == _posts.length) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                            return PostCard(post: _posts[index]);
-                          },
-                          childCount: _posts.length + (_isLoadingMore ? 1 : 0),
-                        ),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: crossAxisCount,
-                          crossAxisSpacing: 24,
-                          mainAxisSpacing: 24,
-                          childAspectRatio: aspectRatio,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+  Widget _buildEmptyState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.article, size: 64, color: Colors.grey[400]),
+            const SizedBox(height: 16),
+            Text(
+              'No posts available at the moment.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey[600], fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Check back later for new posts.',
+              style: TextStyle(color: Colors.grey[500], fontSize: 14),
+            ),
+          ],
+        ),
       ),
     );
   }

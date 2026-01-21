@@ -62,58 +62,59 @@ class _BiographiesScreenState extends State<BiographiesScreen> {
         body: _loading
             ? const Center(child: CircularProgressIndicator())
             : _biographies.isEmpty
-                ? _buildEmptyState()
-                : SingleChildScrollView(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Promotions',
-                          style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Promotions for the public to access the Online Games and for the community to connect with each other',
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
-                        const SizedBox(height: 24),
-                        LayoutBuilder(
-                          builder: (context, constraints) {
-                            int crossAxisCount;
-                            if (constraints.maxWidth >= 1200) {
-                              crossAxisCount = 4;
-                            } else if (constraints.maxWidth >= 900) {
-                              crossAxisCount = 3;
-                            } else if (constraints.maxWidth >= 600) {
-                              crossAxisCount = 2;
-                            } else {
-                              crossAxisCount = 1;
-                            }
-
-                            const double spacing = 16;
-                            final double itemWidth =
-                                (constraints.maxWidth - spacing * (crossAxisCount - 1)) /
-                                    crossAxisCount;
-
-                            return Wrap(
-                              spacing: spacing,
-                              runSpacing: spacing,
-                              children: _biographies.map((bio) {
-                                return SizedBox(
-                                  width: itemWidth,
-                                  child: _buildBiographyCard(bio),
-                                );
-                              }).toList(),
-                            );
-                          },
-                        ),
-                      ],
+            ? _buildEmptyState()
+            : SingleChildScrollView(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Promotions',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Promotions for the public to access the Online Games and for the community to connect with each other',
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                    const SizedBox(height: 24),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        int crossAxisCount;
+                        if (constraints.maxWidth >= 1200) {
+                          crossAxisCount = 4;
+                        } else if (constraints.maxWidth >= 900) {
+                          crossAxisCount = 3;
+                        } else if (constraints.maxWidth >= 600) {
+                          crossAxisCount = 2;
+                        } else {
+                          crossAxisCount = 1;
+                        }
+
+                        const double spacing = 16;
+                        final double itemWidth =
+                            (constraints.maxWidth -
+                                spacing * (crossAxisCount - 1)) /
+                            crossAxisCount;
+
+                        return Wrap(
+                          spacing: spacing,
+                          runSpacing: spacing,
+                          children: _biographies.map((bio) {
+                            return SizedBox(
+                              width: itemWidth,
+                              child: _buildBiographyCard(bio),
+                            );
+                          }).toList(),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
       ),
     );
   }
@@ -125,11 +126,7 @@ class _BiographiesScreenState extends State<BiographiesScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.account_circle,
-              size: 64,
-              color: Colors.grey[400],
-            ),
+            Icon(Icons.account_circle, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
               'No Promotions available at the moment.',
@@ -152,7 +149,7 @@ class _BiographiesScreenState extends State<BiographiesScreen> {
       elevation: 1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
-        splashColor: Colors.grey.withOpacity(0.2),
+        splashColor: Colors.grey.withValues(alpha: 0.2),
         onTap: () => Navigator.pushNamed(
           context,
           "/biography-detail",

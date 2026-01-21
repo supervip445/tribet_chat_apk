@@ -1,6 +1,4 @@
-import 'package:dhamma_apk/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'notification_bell.dart';
 import '../services/public_auth_service.dart';
 
@@ -96,9 +94,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
     }
 
     final isLoggedIn = _publicUser != null;
-    final authProvider = Provider.of<AuthProvider>(context);
-    debugPrint('AuthProvider isAuthenticated: ${authProvider.user}');
-
+    
     return Padding(
       padding: const EdgeInsets.only(right: 4),
       child: Row(
