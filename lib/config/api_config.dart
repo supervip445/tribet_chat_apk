@@ -2,7 +2,7 @@ class ApiConfig {
   // Update this with your actual API base URL
   // For local development: 'http://localhost:8000/api'
   // For production: 'https://your-domain.com/api'
-  static const String baseUrl = 'https://luckymillion.pro/api';
+  static const String baseUrl = 'https://trichatback.site/api';
   
   // Public endpoints
   static const String publicPosts = '/public/posts';
