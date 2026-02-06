@@ -1,4 +1,4 @@
-package com.example.thitsaintchoun_apk
+package com.trichat.app
 
 import io.flutter.embedding.android.FlutterActivity
 

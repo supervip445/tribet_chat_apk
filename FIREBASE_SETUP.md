@@ -35,10 +35,10 @@ This guide will help you set up Firebase Cloud Messaging for push notifications 
 ## Step 2: Add Android App to Firebase
 
 1. In Firebase Console, click "Add app" and select Android
-2. Enter package name: `com.example.thitsaintchoun_apk`
+2. Enter package name: `com.trichat.app`
    - **This matches the `applicationId` in `android/app/build.gradle.kts` (line 25)**
-   - **Current package name**: `com.example.thitsaintchoun_apk`
-   - **To verify**: Check `android/app/build.gradle.kts` line 25: `applicationId = "com.example.thitsaintchoun_apk"`
+   - **Current package name**: `com.trichat.app`
+   - **To verify**: Check `android/app/build.gradle.kts` line 25: `applicationId = "com.trichat.app"`
    - **If you change the package name in `build.gradle.kts`, you must update it in Firebase too**
 3. Register app
 4. Download `google-services.json`
